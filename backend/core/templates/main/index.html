@@ -10,8 +10,8 @@
       </div>
       <nav class="nav">
         <a href="#" class="nav__link nav__link--active">Ринок</a>
-        <a href="#" class="nav__link" style="opacity: 0.5;cursor: not-allowed;"  disabled>Портфель</a>
-        <a href="#" class="nav__link" style="opacity: 0.5;cursor: not-allowed;"  disabled>Обране</a>
+        <a href="#" class="nav__link nav__link--disabled" aria-disabled="true">Портфель</a>
+        <a href="#" class="nav__link nav__link--disabled" aria-disabled="true">Обране</a>
       </nav>
       <div class="topbar__actions">
         <input
@@ -40,7 +40,7 @@
                 </template>
             </ul>
         </div>
-        <button class="btn btn--primary" type="button" style="opacity: 0.5;cursor: not-allowed;"  disabled>Підключити гаманець</button>
+        <button class="btn btn--primary" type="button" disabled>Підключити гаманець</button>
 
       </div>
     </div>
@@ -107,7 +107,7 @@
           </thead>
           <tbody>      
               <template  x-for="(coin, index) in paginatedCoins" :key="coin.gecko_id || index" > 
-                <tr @click="window.location.href = `/coin/${coin.gecko_id}/`" style="cursor: pointer;">
+                <tr class="coin-row" @click="window.location.href = `/coin/${coin.gecko_id}/`">
                   <td class="muted" x-text="(page - 1) * perPage + index + 1"></td>
                   <td>
                     <div class="coin">

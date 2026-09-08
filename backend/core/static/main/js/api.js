@@ -1,8 +1,18 @@
-export async function getCoins(search = '') {
-    const url = search
-        ? `/api/coins/?search=${encodeURIComponent(search)}`
-        : '/api/coins/';
+export async function getCoins() {
+    const url = '/api/coins/';
 
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+export async function getCoinsSearch(search = '') {
+    const url = `/api/coins/?search=${encodeURIComponent(search)}`
+        
     const response = await fetch(url);
 
     if (!response.ok) {

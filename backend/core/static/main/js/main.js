@@ -1,4 +1,4 @@
-import { getCoins, getGlobalData } from "./api.js";
+import { getCoins, getGlobalData, getCoinsSearch } from "./api.js";
 
 document.addEventListener('alpine:init', () => {
     Alpine.data('cryptoMarket', () => ({
@@ -26,6 +26,20 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
+        async fetchData() {
+            try {
+
+                const [coinsData, globalDataResult] = await Promise.all([
+                    getCoins(this.searchQuery),
+                    getGlobalData()
+                ]);
+                this.coins = coinsData;
+                this.globalData = globalDataResult;
+            } catch (error) {
+                console.error("Error fetching crypto data:", error);
+            }
+        }, 
+
         async fetchSearchResults() {
             const query = this.searchQuery.trim();
             if (!query) {
@@ -35,7 +49,7 @@ document.addEventListener('alpine:init', () => {
             }
 
             try {
-                const data = await getCoins(query);
+                const data = await getCoinsSearch(query);
                 this.searchResults = data.slice(0, 6);
                 this.showDropdown = this.searchResults.length > 0;
             } catch (error) {
@@ -43,6 +57,13 @@ document.addEventListener('alpine:init', () => {
                 this.searchResults = [];
                 this.showDropdown = false;
             }
+        },
+
+        async scheduleNextFetch() {
+            this.timerId = setTimeout(async () => {
+                await this.fetchData();
+                this.scheduleNextFetch();
+            }, 5000);
         },
 
         sortBy(column) {
@@ -151,30 +172,9 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        async scheduleNextFetch() {
-            this.timerId = setTimeout(async () => {
-                await this.fetchData();
-                this.scheduleNextFetch();
-            }, 5000);
-        },
-
         destroy() {
             if (this.timerId) clearTimeout(this.timerId);
         },
-
-        async fetchData() {
-            try {
-
-                const [coinsData, globalDataResult] = await Promise.all([
-                    getCoins(this.searchQuery),
-                    getGlobalData()
-                ]);
-                this.coins = coinsData;
-                this.globalData = globalDataResult;
-            } catch (error) {
-                console.error("Error fetching crypto data:", error);
-            }
-        }, 
 
         priceFormat(val) {
             if (val == null) return '$0.00';
