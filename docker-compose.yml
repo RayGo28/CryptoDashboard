@@ -1,4 +1,13 @@
-version: '3.8'
+
+x-backend-environment: &backend-environment
+  TZ: Europe/Kyiv
+  PYTHONPATH: /code
+  DEBUG: "True"
+  POSTGRES_DB: engine_db
+  POSTGRES_USER: user
+  POSTGRES_PASSWORD: password
+  POSTGRES_HOST: db
+  POSTGRES_PORT: "5432"
 
 services:
   db:
@@ -34,6 +43,7 @@ services:
     ports:
       - "8000:8000"
     working_dir: /code
+    environment: *backend-environment
     depends_on:
       db:
         condition: service_healthy
@@ -46,9 +56,7 @@ services:
     volumes:
       - ./backend:/code
     working_dir: /code
-    environment:
-      - TZ=Europe/Kyiv
-      - PYTHONPATH=/code
+    environment: *backend-environment
     depends_on:
       db:
         condition: service_healthy
@@ -61,9 +69,7 @@ services:
     volumes:
       - ./backend:/code
     working_dir: /code
-    environment:
-      - TZ=Europe/Kyiv
-      - PYTHONPATH=/code
+    environment: *backend-environment
     depends_on:
       db:
         condition: service_healthy
@@ -76,7 +82,8 @@ services:
     ports:
       - "5555:5555"
     environment:
-      - CELERY_BROKER_URL=redis://redis:6379/0
+      <<: *backend-environment
+      CELERY_BROKER_URL: redis://redis:6379/0
     depends_on:
       redis:
         condition: service_healthy

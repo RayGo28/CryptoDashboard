@@ -10,6 +10,15 @@ SECRET_KEY = config('SECRET_KEY', default='')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
+
+def show_debug_toolbar(request):
+    return DEBUG
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': show_debug_toolbar,
+}
+
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS",
     default="localhost,127.0.0.1",
@@ -19,6 +28,7 @@ INSTALLED_APPS = [
     'core',
     'rest_framework',
     'watcher',
+    'debug_toolbar',
     'drf_spectacular',
     'django.contrib.humanize',
     'django.contrib.admin',
@@ -30,6 +40,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -143,3 +154,9 @@ CACHES = {
         }
     }
 }
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+    'localhost',
+]
+

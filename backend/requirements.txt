@@ -9,3 +9,4 @@ flower
 python-decouple
 django-redis
 drf-spectacular
+django-debug-toolbar
