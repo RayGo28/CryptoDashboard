@@ -18,14 +18,17 @@ db.sqlite3
 backend/db.sqlite3
 /media/
 /staticfiles/
+backend/staticfiles/
 *.pot
 *.pyc
 
 # Environment / secrets
 .env
 .env.*
+!.env.example
 backend/.env
 backend/.env.*
+!backend/.env.example
 
 # Celery / beat
 celerybeat-schedule
