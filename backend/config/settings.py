@@ -1,3 +1,5 @@
+import sys
+
 from celery.schedules import crontab # type: ignore
 from pathlib import Path
 from decouple import config # type: ignore
@@ -9,6 +11,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
+
+TESTING = 'test' in sys.argv
 
 
 def show_debug_toolbar(request):
@@ -28,7 +32,6 @@ INSTALLED_APPS = [
     'core',
     'rest_framework',
     'watcher',
-    'debug_toolbar',
     'drf_spectacular',
     'django.contrib.humanize',
     'django.contrib.admin',
@@ -40,7 +43,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -157,8 +159,8 @@ CACHES = {
     }
 }
 
-INTERNAL_IPS = [
-    '127.0.0.1',
-    'localhost',
-]
 
+if DEBUG and not TESTING:
+    INSTALLED_APPS += ['debug_toolbar']
+    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
+    INTERNAL_IPS = ['127.0.0.1', 'localhost']

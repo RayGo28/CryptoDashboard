@@ -7,7 +7,7 @@ urlpatterns = [
     path('', include('core.urls')),
 ]
 
-if settings.DEBUG:
+if settings.DEBUG and not settings.TESTING:
     from debug_toolbar.toolbar import debug_toolbar_urls
 
     urlpatterns += debug_toolbar_urls()
